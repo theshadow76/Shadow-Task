@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_application_1/screens/home/body.dart';
 import 'package:flutter_application_1/screens/register/registerv2.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,6 +16,8 @@ class loginv2 extends StatefulWidget {
 // ignore: camel_case_types
 class _loginv2State extends State<loginv2> {
   String errorText = "";
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,29 +32,38 @@ class _loginv2State extends State<loginv2> {
           children: [
             Center(
               child: Container(
-                margin: EdgeInsets.only(top: 34),
-                child: Text(
+                margin: const EdgeInsets.only(top: 34),
+                child: const Text(
                   "ShadowTask",
                   style: TextStyle(
-                      color: Color.fromARGB(150, 0, 0, 0), fontSize: 40,),
+                    color: Color.fromARGB(150, 0, 0, 0),
+                    fontSize: 40,
+                  ),
                 ),
               ),
             ),
             Center(
               child: Container(
-                margin: EdgeInsets.only(top: 126),
+                width: screenSizeWith - 40,
+                margin: const EdgeInsets.only(top: 126),
                 child: TextField(
+                  style: const TextStyle(fontSize: 30),
                   textAlign: TextAlign.center,
-                  decoration: InputDecoration(hintText: "Email"),
+                  decoration: const InputDecoration(hintText: "Email"),
+                  controller: emailController,
                 ),
               ),
             ),
             Center(
               child: Container(
-                margin: EdgeInsets.only(top: 90),
+                width: screenSizeWith - 70,
+                margin: const EdgeInsets.only(top: 90),
                 child: TextField(
+                  style: const TextStyle(fontSize: 30),
                   textAlign: TextAlign.center,
-                  decoration: InputDecoration(hintText: "Password"),
+                  decoration: const InputDecoration(hintText: "Password"),
+                  obscureText: true,
+                  controller: passwordController,
                 ),
               ),
             ),
@@ -59,7 +72,7 @@ class _loginv2State extends State<loginv2> {
             ),
             Center(
               child: Container(
-                margin: EdgeInsets.only(top: 50),
+                margin: const EdgeInsets.only(top: 50),
                 width: MediaQuery.of(context).size.width - 70,
                 height: 60,
                 child: ElevatedButton(
@@ -67,7 +80,7 @@ class _loginv2State extends State<loginv2> {
                       backgroundColor: MaterialStateProperty.all(
                     Color.fromARGB(120, 16, 196, 113),
                   )),
-                  onPressed: (() => {}),
+                  onPressed: signIn,
                   child: Container(
                       child: Text(
                     "LOG IN",
@@ -81,19 +94,24 @@ class _loginv2State extends State<loginv2> {
                   margin: EdgeInsets.only(top: 25),
                   child: Image.asset(
                     'images/1534129544.png',
-                    width: 39,
-                    height: 38,
+                    width: 42,
+                    height: 42,
                   )),
             ),
             GestureDetector(
               onTap: (() => {
-                Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => registerv2()))
-              }),
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => registerv2()))
+                  }),
               child: Center(
                 child: Container(
-                  margin: EdgeInsets.only(top: 30),
-                  child: Text("Don’t have an account? Register here!"),
+                  margin: const EdgeInsets.only(top: 30),
+                  child: const Text(
+                    "Don’t have an account? Register here!",
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
             )
@@ -104,33 +122,53 @@ class _loginv2State extends State<loginv2> {
             children: [
               GestureDetector(
                 onTap: (() => {
-                  launch('https://www.instagram.com/tienda_shadowtech_software/')
-                }),
+                      launch(
+                          'https://www.instagram.com/tienda_shadowtech_software/')
+                    }),
                 child: Container(
-                  alignment: Alignment.topLeft,
-                  child: Image.asset(
-                    'images/instagram.png',
-                    width: 27,
-                    height: 27,
-                  )),
+                    alignment: Alignment.topLeft,
+                    child: Image.asset(
+                      'images/instagram.png',
+                      width: 39,
+                      height: 39,
+                    )),
               ),
               GestureDetector(
-                onTap: (() => {
-                  launch('http://www.theshadowtech.com/')
-                }),
+                onTap: (() => {launch('http://www.theshadowtech.com/')}),
                 child: Container(
-                  alignment: Alignment.topRight,
-                  margin: EdgeInsets.only(left: screenSizeWith - 70),
-                  child: Image.asset(
-                    'images/web.png',
-                    width: 27,
-                    height: 27,
-                  )),
+                    alignment: Alignment.topRight,
+                    margin: EdgeInsets.only(left: screenSizeWith - 82),
+                    child: Image.asset(
+                      'images/web.png',
+                      width: 27,
+                      height: 27,
+                    )),
               ),
             ],
           )
         ],
       ),
     );
+  }
+
+  Future signIn() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: emailController.text.trim(),
+              password: passwordController.text.trim());
+      Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        setState(() {
+          errorText = "User not found";
+        });
+      } else if (e.code == 'wrong-password') {
+        setState(() {
+          errorText = "Incorrect password";
+        });
+      }
+    }
   }
 }

@@ -18,11 +18,11 @@ class Tasks extends StatelessWidget {
         width: 200,
         height: 45,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          color: Colors.black,
+          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+          color: Color.fromARGB(105, 0, 0, 0),
         ),
         child: Material(
-          elevation: 1,
+          elevation: 6,
         ),
       )
     ]));

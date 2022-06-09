@@ -1,9 +1,17 @@
+library registerv2;
+
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_application_1/screens/home/body.dart';
 import 'package:flutter_application_1/screens/login/loginv2.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
+
+
 
 class registerv2 extends StatefulWidget {
   const registerv2({Key? key}) : super(key: key);
@@ -14,9 +22,9 @@ class registerv2 extends StatefulWidget {
 
 // ignore: camel_case_types
 class _loginv2State extends State<registerv2> {
-  String errorText = "";
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  static final emailController = TextEditingController();
+  static final passwordController = TextEditingController();
+  static String errorText = '';
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +68,7 @@ class _loginv2State extends State<registerv2> {
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(hintText: "Password"),
                   obscureText: true,
+                  controller: passwordController,
                 ),
               ),
             ),
@@ -76,7 +85,7 @@ class _loginv2State extends State<registerv2> {
                       backgroundColor: MaterialStateProperty.all(
                     Color.fromARGB(120, 16, 196, 113),
                   )),
-                  onPressed: (() => {}),
+                  onPressed: signUp,
                   child: Container(
                       child: Text(
                     "Register",
@@ -90,8 +99,8 @@ class _loginv2State extends State<registerv2> {
                   margin: EdgeInsets.only(top: 25),
                   child: Image.asset(
                     'images/1534129544.png',
-                    width: 39,
-                    height: 38,
+                    width: 42,
+                    height: 42,
                   )),
             ),
             GestureDetector(
@@ -104,7 +113,10 @@ class _loginv2State extends State<registerv2> {
               child: Center(
                 child: Container(
                   margin: EdgeInsets.only(top: 30),
-                  child: Text("Don’t have an account? Register here!"),
+                  child: Text(
+                    "Don’t have an account? Login here!",
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
             )
@@ -122,15 +134,15 @@ class _loginv2State extends State<registerv2> {
                     alignment: Alignment.topLeft,
                     child: Image.asset(
                       'images/instagram.png',
-                      width: 27,
-                      height: 27,
+                      width: 39,
+                      height: 39,
                     )),
               ),
               GestureDetector(
                 onTap: (() => {launch('http://www.theshadowtech.com/')}),
                 child: Container(
                     alignment: Alignment.topRight,
-                    margin: EdgeInsets.only(left: screenSizeWith - 70),
+                    margin: EdgeInsets.only(left: screenSizeWith - 82),
                     child: Image.asset(
                       'images/web.png',
                       width: 27,
@@ -150,14 +162,20 @@ class _loginv2State extends State<registerv2> {
           .createUserWithEmailAndPassword(
               email: emailController.text.trim(),
               password: passwordController.text.trim());
+      Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        errorText = "The password provided is to weak";
+        //errorText = "The password provided is to weak";
+        setState(() {
+          errorText = "The password provided is to weak";
+        });
       } else if (e.code == 'email-already-in-use') {
-        errorText = "The account already exists for that email";
+        //errorText = "The account already exists for that email";
+        setState(() {
+          errorText = "The account already exists";
+        });
       }
-    } catch (e) {
-      errorText = "Account created";
     }
   }
 }

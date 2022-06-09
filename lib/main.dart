@@ -6,6 +6,7 @@ import 'package:flutter_application_1/firebase_options.dart';
 import 'package:flutter_application_1/screens/home/body.dart';
 import 'package:flutter_application_1/screens/register/register.dart';
 import 'package:flutter_application_1/screens/register/registerBody.dart';
+//import 'package:icon_shadow/icon_shadow.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +16,6 @@ void main() async {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     if (user == null) {
-      
     } else {}
   });
   runApp(const MyApp());

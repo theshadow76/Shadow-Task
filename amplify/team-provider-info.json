@@ -1,0 +1,15 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-shadowtask-staging-143911-authRole",
+      "UnauthRoleArn": "arn:aws:iam::179627409166:role/amplify-shadowtask-staging-143911-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::179627409166:role/amplify-shadowtask-staging-143911-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-shadowtask-staging-143911-deployment",
+      "UnauthRoleName": "amplify-shadowtask-staging-143911-unauthRole",
+      "StackName": "amplify-shadowtask-staging-143911",
+      "StackId": "arn:aws:cloudformation:us-east-1:179627409166:stack/amplify-shadowtask-staging-143911/ed2fb1e0-e801-11ec-a110-124c684a8891",
+      "AmplifyAppId": "dxxb5dntvm64l"
+    }
+  }
+}
