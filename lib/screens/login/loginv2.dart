@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -13,11 +14,16 @@ class loginv2 extends StatefulWidget {
   State<loginv2> createState() => _loginv2State();
 }
 
+class emailpasswordData {
+  static final emailController = TextEditingController();
+  static final passwordController = TextEditingController();
+}
+
 // ignore: camel_case_types
 class _loginv2State extends State<loginv2> {
   String errorText = "";
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final emailController = emailpasswordData.emailController;
+  final passwordController = emailpasswordData.passwordController;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,8 @@ class _loginv2State extends State<loginv2> {
     String screenwidthstr = screensizewidth.toString();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+      theme: ThemeData(
+          scaffoldBackgroundColor: Color.fromARGB(255, 228, 228, 228)),
       home: Scaffold(
         body: Column(
           children: [
@@ -157,6 +164,10 @@ class _loginv2State extends State<loginv2> {
           .signInWithEmailAndPassword(
               email: emailController.text.trim(),
               password: passwordController.text.trim());
+      FirebaseFirestore.instance
+          .collection("MyTodos")
+          .doc(emailController.text)
+          .set({"email": emailController.text});
       Navigator.push(context,
           MaterialPageRoute(builder: (BuildContext context) => HomePage()));
     } on FirebaseAuthException catch (e) {

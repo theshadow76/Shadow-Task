@@ -11,8 +11,6 @@ import 'package:flutter_application_1/screens/login/loginv2.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 
-
-
 class registerv2 extends StatefulWidget {
   const registerv2({Key? key}) : super(key: key);
 
@@ -33,7 +31,8 @@ class _loginv2State extends State<registerv2> {
     String screenwidthstr = screensizewidth.toString();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+      theme: ThemeData(
+          scaffoldBackgroundColor: Color.fromARGB(255, 228, 228, 228)),
       home: Scaffold(
         body: Column(
           children: [
@@ -77,20 +76,33 @@ class _loginv2State extends State<registerv2> {
             ),
             Center(
               child: Container(
-                margin: EdgeInsets.only(top: 50),
+                // aqui
                 width: MediaQuery.of(context).size.width - 70,
                 height: 60,
+                margin: EdgeInsets.only(top: 50),
                 child: ElevatedButton(
+                  
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                    Color.fromARGB(120, 16, 196, 113),
+                    const Color.fromARGB(120, 16, 196, 113),
                   )),
                   onPressed: signUp,
                   child: Container(
+                      width: MediaQuery.of(context).size.width - 70,
+                      height: 60,
+                      /*
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                        colors: [
+                          Color.fromARGB(150, 16, 196, 112),
+                          Color.fromARGB(255, 16, 196, 112),
+                        ],
+                      )),
+                      padding: const EdgeInsets.all(10.0),*/
                       child: Text(
-                    "Register",
-                    style: TextStyle(fontSize: 32, color: Colors.grey[700]),
-                  )),
+                        "Register",
+                        style: TextStyle(fontSize: 32, color: Colors.grey[700]),
+                      )),
                 ),
               ),
             ),

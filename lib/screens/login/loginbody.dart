@@ -22,14 +22,18 @@ class LoginPage extends StatelessWidget {
                   margin: EdgeInsets.only(left: 100, top: 10),
                   child: Text(
                     "ShadowTask",
-                    style: TextStyle(fontSize: 40, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 40,
+                        color: Color.fromARGB(255, 228, 228, 228)),
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 10, top: 20),
                   child: Text(
                     "Login",
-                    style: TextStyle(fontSize: 40, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 40,
+                        color: Color.fromARGB(255, 228, 228, 228)),
                   ),
                 ),
                 Container(
@@ -61,7 +65,8 @@ class LoginPage extends StatelessWidget {
                     margin: EdgeInsets.only(top: 27),
                     child: Text(
                       "Don't have a account? Register here",
-                      style: TextStyle(color: Colors.white),
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 228, 228, 228)),
                     ),
                   ),
                 ),
@@ -77,7 +82,9 @@ class LoginPage extends StatelessWidget {
                     child: Center(
                       child: Text(
                         "Accept",
-                        style: TextStyle(color: Colors.white, fontSize: 25),
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 228, 228, 228),
+                            fontSize: 25),
                       ),
                     ),
                   ),
@@ -88,7 +95,8 @@ class LoginPage extends StatelessWidget {
                       onTap: () => {launch('mailto:shadowtech011@gmail.com')},
                       child: Text(
                         "Having problems? press here for support!",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 228, 228, 228)),
                       ),
                     ))
               ],

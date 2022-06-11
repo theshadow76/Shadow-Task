@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -23,6 +24,10 @@ import 'package:flutter_application_1/screens/register/registerv2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+class userDataMainOne {
+  static var userData = User;
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -30,6 +35,9 @@ void main() async {
   );
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {});
+
   runApp(HomePage());
 }
 
@@ -50,6 +58,10 @@ class Input {
   static String input = "";
 }
 
+class logic {
+  static bool isTaskCreated = false;
+}
+
 bool isGoodToGo = false;
 double Inode = 15;
 
@@ -58,13 +70,51 @@ final dateOne = List.generate(20, (i) => Todo("TestTasks"));
 
 class _MyWidgetState extends State<HomePage> {
   List<String> todos = [];
+  List<String> tasks = [];
+  List tasktododatalist = [];
+  bool isTaskCreated = logic.isTaskCreated;
+  bool isEnded = false;
+  int InodeTasks = -1000;
+  int InodetaskPos = -1000;
+  double IMarginPosTask = 15;
   List dateOne = [];
   String input = Input.input.toString();
   String dateTwo = "";
+  int TaskNum = 1;
   List<String> Inp = [];
+  List<String> taskposdesicder = [];
   DateTime selectedDate = DateTime.now();
+  final UserDataLogin = emailpasswordData.emailController.text;
+  final UserDataLoginpwd = emailpasswordData.passwordController.text;
+  final userData = User;
+  final UserMail = registerpage.emailController.text;
+  bool FbHasdata = false;
+  String dataI = "data";
+  int dataInode = 1;
+  var FireCurentUser = FirebaseAuth.instance.currentUser!.email;
+  List TaskNameDecider = [];
+  List allData = [];
 
   // para el datasaver
+
+  var DocumentDatas = FirebaseFirestore.instance
+      .collection("Tasks")
+      .doc("data ${FirebaseAuth.instance.currentUser!.email.toString()}");
+  final DataNedded = FirebaseFirestore.instance
+      .collection("Tasks")
+      .doc("data ${FirebaseAuth.instance.currentUser!.email}")
+      .get();
+
+  CollectionReference _collectionRef =
+      FirebaseFirestore.instance.collection('Tasks');
+
+  Future<void> getData() async {
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+
+    // Get data from docs and convert map to List
+    allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+  }
 
   void initState() {
     // TODO: implement initState
@@ -77,6 +127,14 @@ class _MyWidgetState extends State<HomePage> {
         FirebaseFirestore.instance.collection('MyTodos').doc(input);
     Map<String, String> todos = {"todoTitle": input};
     documentReference.set(todos).whenComplete(() => {print("$input created")});
+  }
+
+  void TaskPosDecider() {
+    while (isTaskCreated == true) {
+      print(InodeTasks);
+      taskposdesicder.add(InodeTasks.toString());
+      break;
+    }
   }
 
   var tsks = (() => {
@@ -118,13 +176,12 @@ class _MyWidgetState extends State<HomePage> {
   }
 
   CollectionReference users = FirebaseFirestore.instance.collection('testuser');
-
-  final userData = registerpage().emailController.toString();
+  var dtone = FirebaseFirestore.instance.collection("TaskData 2").get();
 
   // creador de tasks / save data
   String? _content;
   String DataValue = "";
-  _MyWidgetState({this.input = ""});
+  _MyWidgetState({this.input = ""}); // importante
   callBack(varDataTasks) {
     setState(() {
       input = varDataTasks;
@@ -138,8 +195,11 @@ class _MyWidgetState extends State<HomePage> {
   int Inode = 1;
 
   Widget build(BuildContext context) {
+    CollectionReference TaskDATA =
+        FirebaseFirestore.instance.collection("TaskData 2");
     double screenSizeWith = MediaQuery.of(context).size.width;
     FlutterAuthOne();
+    getData();
     return MaterialApp(
         theme: ThemeData(
             scaffoldBackgroundColor: Color.fromARGB(255, 64, 66, 201)),
@@ -163,6 +223,57 @@ class _MyWidgetState extends State<HomePage> {
                             onPressed: () {
                               Navigator.of(context, rootNavigator: true)
                                   .pop('dialog');
+                              isTaskCreated = true;
+                              InodetaskPos = InodetaskPos + 1;
+                              IMarginPosTask = IMarginPosTask + 15;
+                              todos.add(InodetaskPos.toString());
+                              logic.isTaskCreated = true;
+                              TaskNum = TaskNum + 1;
+                              tasks.add(input);
+                              TaskNameDecider.add(input);
+                              int taskNameDeciderLengh = TaskNameDecider.length;
+                              String taskNameDeciderLenghstr =
+                                  taskNameDeciderLengh.toString();
+                              FirebaseFirestore.instance
+                                  .collection("Tasks")
+                                  .doc("user $FireCurentUser list data")
+                                  .set({"data": taskNameDeciderLenghstr});
+                              TaskPosDecider();
+                              //tasks start
+                              TaskCreator();
+                              Container(
+                                height: 50,
+                                child: ListView.builder(
+                                  itemCount: todos.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    print(todos[index] + "Mal");
+                                    return Dismissible(
+                                      key: Key(todos[index]),
+                                      child: Card(
+                                        elevation: 4,
+                                        margin: EdgeInsets.only(top: 10),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                        child: ListTile(
+                                            title: Text(input),
+                                            trailing: IconButton(
+                                                icon: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    // para modificar algo despues de borar la task
+                                                    todos.removeAt(index);
+                                                  });
+                                                })),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ); // task creator
                               //TODO: add date picker
                               showDialog(
                                   context: context,
@@ -177,15 +288,21 @@ class _MyWidgetState extends State<HomePage> {
                                             dateTwo = newDateTime.toString();
                                             setState(() {
                                               dateOne.add(dateTwo);
+                                              InodeTasks = InodeTasks + 1;
                                               int Inodes = Inode++;
                                             });
                                             Navigator.of(context,
                                                     rootNavigator: true)
                                                 .pop('CalendarDatePicker');
+                                            print(DocumentDatas.get());
+                                            dataInode = dataInode + 1;
                                             FirebaseFirestore.instance
-                                                .collection('MyTodos')
-                                                .doc("data ")
-                                                .set({"taskData": input});
+                                                .collection("Tasks")
+                                                .doc('data $FireCurentUser')
+                                                .set({
+                                              'data ${DateTime.now()}':
+                                                  TaskNameDecider
+                                            });
                                           }),
                                     );
                                   });
@@ -194,10 +311,11 @@ class _MyWidgetState extends State<HomePage> {
                       ],
                     );
                   });
+              TaskCreator();
             },
             child: const Icon(
               Icons.add,
-              color: Colors.white,
+              color: Color.fromARGB(255, 228, 228, 228),
             ),
           ),
           body: Column(
@@ -227,15 +345,16 @@ class _MyWidgetState extends State<HomePage> {
                         ),
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.only(top: 40),
+                          margin: const EdgeInsets.only(top: 40),
                           child: const Text("ShadowTask",
                               textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 24)),
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 228, 228, 228),
+                                  fontSize: 24)),
                         ),
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.only(top: 40),
+                          margin: const EdgeInsets.only(top: 40),
                           child: const Icon(
                             Icons.calendar_month_sharp,
                             size: 28.2,
@@ -251,25 +370,61 @@ class _MyWidgetState extends State<HomePage> {
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height - 156.2,
                       decoration: const BoxDecoration(
-                          color: Colors.white,
+                          color: Color.fromARGB(255, 228, 228, 228),
                           borderRadius: BorderRadius.vertical(
                               top: Radius.circular(45.0))),
                       child: Align(
                         child: Column(children: <Widget>[
                           Container(
-                              margin: const EdgeInsets.only(top: 40),
-                              width: MediaQuery.of(context).size.width,
-                              child: const Text(
-                                "Tasks",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 33, 33, 33),
-                                    fontSize: 24),
-                              )),
-                          Container(
-                            height: 50,
-                            child: TaskCreator(),
-                          )
+                            margin: const EdgeInsets.only(top: 10),
+                            width: MediaQuery.of(context).size.width,
+                            height: 42.2,
+                            child: const Text(
+                              "Tasks",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 33, 33, 33),
+                                  fontSize: 24),
+                            ),
+                          ),
+                          if (isTaskCreated == true) ...[
+                            Container(
+                              height: MediaQuery.of(context).size.height - 225,
+                              child: ListView.builder(
+                                  itemCount: taskposdesicder.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Dismissible(
+                                      key: Key(taskposdesicder[index]),
+                                      child: Container(
+                                        margin: EdgeInsets.only(top: 5),
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                20,
+                                        height: 40,
+                                        decoration: const BoxDecoration(
+                                            //este es el decoration
+                                            color: Color.fromARGB(
+                                                228, 228, 228, 228),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(12.0))),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              height: 40,
+                                              child: Text(tasks[index]),
+                                            ),
+                                            if (tasks[index] == true) ...[],
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                            )
+                          ],
+                          if (isTaskCreated == false) ...[
+                            Text("There are no tasks! start creating some!")
+                          ],
                         ]),
                       ),
                     ),
@@ -294,7 +449,11 @@ class CreatTaskBtnBody extends StatelessWidget {
   }
 }
 
-
+void TaskPosCreator() {
+  while (logic.isTaskCreated == true) {
+    return TaskPosCreator();
+  }
+}
 
 /*
                             //empiesa aqui

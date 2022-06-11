@@ -16,16 +16,14 @@ class _MyWidgetState extends State<menu> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
-      home: Container(
-        decoration: BoxDecoration(
+        theme: ThemeData(
+            scaffoldBackgroundColor: Color.fromARGB(255, 228, 228, 228)),
+        home: Container(
+          decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/backgroundMenu.jpeg"),
-                fit: BoxFit.cover
-              )
-            ),
-        child: menuhome(),
-      )
-    );
+                  image: AssetImage("assets/images/backgroundMenu.jpeg"),
+                  fit: BoxFit.cover)),
+          child: menuhome(),
+        ));
   }
 }
